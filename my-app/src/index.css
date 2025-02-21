@@ -44,5 +44,6 @@ body {
 
 .input div:hover {
   background-color: white;
+  border-radius: 5px;
   color: black;
 }

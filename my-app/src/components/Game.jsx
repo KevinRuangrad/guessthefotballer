@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -8,9 +8,11 @@ import FormLabel from "@mui/material/FormLabel";
 const GuessThePlayer = () => {
   const [league, setLeague] = useState("");
   const [randomPlayer, setRandomPlayer] = useState(null);
+  const [guessedPlayers, setGuessedPlayers] = useState([]);
   const [players, setPlayers] = useState([]);
   const [filteredPlayers, setFilteredPlayers] = useState([]);
   const [isLeagueSelected, setIsLeagueSelected] = useState(false);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (league) {
@@ -55,6 +57,22 @@ const GuessThePlayer = () => {
     }
   };
 
+  const displayGuess = (player) => {
+    setGuessedPlayers((prevGuessedPlayers) => [...prevGuessedPlayers, player]);
+    console.log("Guessed players array:", [...guessedPlayers, player]);
+    console.log("Clicked player:", player);
+    setFilteredPlayers([]);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      setFilteredPlayers([]);
+    }, 200); 
+  };
+
   return (
     <div className="flex justify-center flex-col items-center text-white p-6">
       <div className="backdrop-blur-custom p-10 w-3xl h-auto rounded-4xl">
@@ -64,7 +82,7 @@ const GuessThePlayer = () => {
             sx={{
               color: "white",
               "&.Mui-focused": {
-                color: "white", // Change this to your desired color for the focused state
+                color: "white",
               },
             }}
           >
@@ -114,7 +132,8 @@ const GuessThePlayer = () => {
             placeholder={isLeagueSelected ? "Search for a player" : "Select a League"}
             onChange={handleInputChange}
             readOnly={!isLeagueSelected}
-            onBlur={() => setFilteredPlayers([])}
+            onBlur={handleBlur}
+            ref={inputRef}
             onFocus={(event) => {
               if (event.target.value.length >= 3) {
                 const searchText = event.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -128,7 +147,7 @@ const GuessThePlayer = () => {
           {filteredPlayers.length > 0 && (
             <div className="absolute top-full left-0 right-0 bg-white text-black z-10 max-h-60 overflow-y-auto input">
               {filteredPlayers.map(player => (
-                <div key={player.id} className="p-2 border-b border-gray-300 flex items-center">
+                <div key={player.id} className="p-2 border-b border-gray-300 flex items-center" onClick={() => displayGuess(player)}>
                   <img src={player.crest} alt={`${player.name} club crest`} className="h-[40px] mr-2" />
                   <p>{player.name}</p>
                 </div>
@@ -136,6 +155,21 @@ const GuessThePlayer = () => {
             </div>
           )}
         </form>
+        <div className="mt-4">
+          <h3 className="text-2xl mb-2">Guessed Players:</h3>
+          {guessedPlayers.length > 0 ? (
+            <ul>
+              {guessedPlayers.map((player, index) => (
+                <li key={index} className="mb-2">
+                  <img src={player.crest} alt={`${player.name} club crest`} className="h-[40px] mr-2 inline" />
+                  <span>{player.name}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No players guessed yet.</p>
+          )}
+        </div>
       </div>
     </div>
   );
