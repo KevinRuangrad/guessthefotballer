@@ -10,6 +10,8 @@ import TextField from "@mui/material/TextField";
 const GuessThePlayer = () => {
   const [league, setLeague] = useState("");
   const [randomPlayer, setRandomPlayer] = useState(null);
+  const [players, setPlayers] = useState([]);
+  const [filteredPlayers, setFilteredPlayers] = useState([]);
 
   useEffect(() => {
     if (league) {
@@ -24,6 +26,7 @@ const GuessThePlayer = () => {
         if (!data.players) {
           throw new Error("No players found");
         }
+        setPlayers(data.players);
         pickRandomPlayer(data.players);
       })
       .catch((error) => console.error("Error fetching players:", error));
@@ -34,11 +37,22 @@ const GuessThePlayer = () => {
     const player = playersList[randomIndex];
     console.log("Randomly selected player:", player);
     setRandomPlayer(player);
-    console.log(player);
   };
 
   const handleLeagueChange = (event) => {
     setLeague(event.target.value);
+  };
+
+  const handleInputChange = (event) => {
+    const searchText = event.target.value.toLowerCase();
+    if (searchText.length >= 3) {
+      const filtered = players.filter(player =>
+        player.name.toLowerCase().includes(searchText)
+      );
+      setFilteredPlayers(filtered);
+    } else {
+      setFilteredPlayers([]);
+    }
   };
 
   return (
@@ -103,12 +117,13 @@ const GuessThePlayer = () => {
             InputLabelProps={{
               style: { color: "white" },
             }}
+            onChange={handleInputChange}
           />
-          {randomPlayer && (
-            <div>
-              <p>Player to Guess: {randomPlayer.name}</p>
+          {filteredPlayers.map(player => (
+            <div key={player.id}>
+              <p>Player: {player.name}</p>
             </div>
-          )}
+          ))}
         </Box>
       </div>
     </div>

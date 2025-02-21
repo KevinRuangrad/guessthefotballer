@@ -32,7 +32,9 @@ app.get('/api/competitions/:leagueCode/teams', async (req, res) => {
     const teamsWithPlayers = data.teams.map(team => {
       return team.squad.map(player => ({
         ...player,
-        club: team.name
+        club: team.name,
+        crest: team.crest,
+        league: data.competition.emblem,
       }));
     }).flat();
 
