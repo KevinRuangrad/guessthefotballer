@@ -9,8 +9,6 @@ const GuessThePlayer = () => {
   const [league, setLeague] = useState("");
   const [randomPlayer, setRandomPlayer] = useState(null);
 
-  const apiKey = "89f248d41b6d42fc8551d25629afd388";
-
   useEffect(() => {
     if (league) {
       fetchPlayers(league);
@@ -18,18 +16,13 @@ const GuessThePlayer = () => {
   }, [league]);
 
   const fetchPlayers = (leagueCode) => {
-    fetch(`https://api.football-data.org/v4/competitions/${leagueCode}/teams`, {
-      headers: {
-        "X-Auth-Token": apiKey,
-      },
-    })
+    fetch(`http://localhost:3000/api/competitions/${leagueCode}/teams`)
       .then((response) => response.json())
       .then((data) => {
-        const allPlayers = [];
-        data.teams.forEach((team) => {
-          allPlayers.push(...team.squad);
-        });
-        pickRandomPlayer(allPlayers);
+        if (!data.players) {
+          throw new Error("No players found");
+        }
+        pickRandomPlayer(data.players);
       })
       .catch((error) => console.error("Error fetching players:", error));
   };
@@ -38,6 +31,7 @@ const GuessThePlayer = () => {
     const randomIndex = Math.floor(Math.random() * playersList.length);
     const player = playersList[randomIndex];
     setRandomPlayer(player);
+    console.log(player);
   };
 
   const handleLeagueChange = (event) => {
@@ -86,12 +80,6 @@ const GuessThePlayer = () => {
           />
         </RadioGroup>
       </FormControl>
-
-      {randomPlayer && (
-        <div>
-          <p>Player to Guess: {randomPlayer.name}</p>
-        </div>
-      )}
     </div>
   );
 };
