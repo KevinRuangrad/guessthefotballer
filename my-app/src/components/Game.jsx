@@ -4,14 +4,13 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 
 const GuessThePlayer = () => {
   const [league, setLeague] = useState("");
   const [randomPlayer, setRandomPlayer] = useState(null);
   const [players, setPlayers] = useState([]);
   const [filteredPlayers, setFilteredPlayers] = useState([]);
+  const [isLeagueSelected, setIsLeagueSelected] = useState(false);
 
   useEffect(() => {
     if (league) {
@@ -41,13 +40,14 @@ const GuessThePlayer = () => {
 
   const handleLeagueChange = (event) => {
     setLeague(event.target.value);
+    setIsLeagueSelected(true);
   };
 
   const handleInputChange = (event) => {
-    const searchText = event.target.value.toLowerCase();
+    const searchText = event.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     if (searchText.length >= 3) {
       const filtered = players.filter(player =>
-        player.name.toLowerCase().includes(searchText)
+        player.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchText)
       );
       setFilteredPlayers(filtered);
     } else {
@@ -96,35 +96,46 @@ const GuessThePlayer = () => {
               label="La Liga"
               sx={{ color: "white" }}
             />
+            <FormControlLabel
+              value="SA"
+              control={<Radio sx={{ color: "white" }} />}
+              label="Seria A"
+              sx={{ color: "white" }}
+            />
           </RadioGroup>
         </FormControl>
-        <h2 className="text-3xl pt-10">Which player are we looking for?</h2>
-        <Box
-          className="pt-4"
-          component="form"
-          sx={{ "& > :not(style)": { m: 1, width: "40ch" } }}
-          noValidate
-          autoComplete="off"
-        >
-          <TextField
-            className="backdrop-blur-intense"
-            id="filled-basic"
-            label="Start guessing the first player"
-            variant="filled"
-            InputProps={{
-              style: { color: "white" },
-            }}
-            InputLabelProps={{
-              style: { color: "white" },
-            }}
+        <h2 className="text-3xl pt-10 text-center mb-4">Which player are we looking for?</h2>
+        <form className="flex justify-center relative w-full">
+          <input
+            type="text"
+            autoComplete="off"
+            name="text"
+            className="input w-full"
+            placeholder={isLeagueSelected ? "Search for a player" : "Select a League"}
             onChange={handleInputChange}
+            readOnly={!isLeagueSelected}
+            onBlur={() => setFilteredPlayers([])}
+            onFocus={(event) => {
+              if (event.target.value.length >= 3) {
+                const searchText = event.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const filtered = players.filter(player =>
+                  player.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchText)
+                );
+                setFilteredPlayers(filtered);
+              }
+            }}
           />
-          {filteredPlayers.map(player => (
-            <div key={player.id}>
-              <p>Player: {player.name}</p>
+          {filteredPlayers.length > 0 && (
+            <div className="absolute top-full left-0 right-0 bg-white text-black z-10 max-h-60 overflow-y-auto input">
+              {filteredPlayers.map(player => (
+                <div key={player.id} className="p-2 border-b border-gray-300 flex items-center">
+                  <img src={player.crest} alt={`${player.name} club crest`} className="h-[40px] mr-2" />
+                  <p>{player.name}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </Box>
+          )}
+        </form>
       </div>
     </div>
   );
