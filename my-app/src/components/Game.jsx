@@ -37,7 +37,6 @@ const GuessThePlayer = () => {
   const pickRandomPlayer = (playersList) => {
     const randomIndex = Math.floor(Math.random() * playersList.length);
     const player = playersList[randomIndex];
-    console.log("Randomly selected player:", player);
     setRandomPlayer(player);
     fetchFlag(player.nationality, setRandomPlayerFlag);
   };
