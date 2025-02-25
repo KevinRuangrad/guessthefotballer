@@ -4,8 +4,8 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 
 const GuessThePlayer = () => {
   const [league, setLeague] = useState("");
@@ -25,7 +25,9 @@ const GuessThePlayer = () => {
   }, [league]);
 
   const fetchPlayers = (leagueCode) => {
-    fetch(`http://guessthefootballerbackend.vercel.app/api/competitions/${leagueCode}/teams`)
+    fetch(
+      `http://guessthefootballerbackend.vercel.app/api/competitions/${leagueCode}/teams`
+    )
       .then((response) => response.json())
       .then((data) => {
         setPlayers(data.players);
@@ -42,12 +44,18 @@ const GuessThePlayer = () => {
   };
 
   const fetchFlag = (nationality, setFlag) => {
-    fetch(`http://guessthefootballerbackend.vercel.app/api/flags/${encodeURIComponent(nationality)}`)
+    fetch(
+      `http://guessthefootballerbackend.vercel.app/api/flags/${encodeURIComponent(
+        nationality
+      )}`
+    )
       .then((response) => response.json())
       .then((data) => {
         setFlag(data.flag);
       })
-      .catch((error) => console.error(`Error fetching flag for ${nationality}:`, error));
+      .catch((error) =>
+        console.error(`Error fetching flag for ${nationality}:`, error)
+      );
   };
 
   const handleLeagueChange = (event) => {
@@ -58,10 +66,17 @@ const GuessThePlayer = () => {
   };
 
   const handleInputChange = (event) => {
-    const searchText = event.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const searchText = event.target.value
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
     if (searchText.length >= 3) {
-      const filtered = players.filter(player =>
-        player.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchText)
+      const filtered = players.filter((player) =>
+        player.name
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .includes(searchText)
       );
       setFilteredPlayers(filtered);
     } else {
@@ -71,8 +86,11 @@ const GuessThePlayer = () => {
 
   const displayGuess = (player) => {
     fetchFlag(player.nationality, (flag) => {
-      setGuessedPlayers((prevGuessedPlayers) => [...prevGuessedPlayers, { ...player, flag }]);
-      setGuesses(prevGuesses => prevGuesses + 1);
+      setGuessedPlayers((prevGuessedPlayers) => [
+        ...prevGuessedPlayers,
+        { ...player, flag },
+      ]);
+      setGuesses((prevGuesses) => prevGuesses + 1);
     });
     setFilteredPlayers([]);
     if (inputRef.current) {
@@ -83,7 +101,7 @@ const GuessThePlayer = () => {
   const handleBlur = () => {
     setTimeout(() => {
       setFilteredPlayers([]);
-    }, 200); 
+    }, 200);
   };
 
   const calculateAge = (dateOfBirth) => {
@@ -91,7 +109,10 @@ const GuessThePlayer = () => {
     const birthDate = new Date(dateOfBirth);
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDifference = today.getMonth() - birthDate.getMonth();
-    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
     return age;
@@ -99,10 +120,10 @@ const GuessThePlayer = () => {
 
   const getPositionAbbreviation = (position) => {
     const positionMap = {
-      "Goalkeeper": "GK",
-      "Defence": "DEF",
-      "Midfield": "MF",
-      "Offence": "FWD",
+      Goalkeeper: "GK",
+      Defence: "DEF",
+      Midfield: "MF",
+      Offence: "FWD",
       "Left Winger": "LW",
       "Right Winger": "RW",
       "Right-Back": "RB",
@@ -130,11 +151,11 @@ const GuessThePlayer = () => {
 
   const getAgeComparisonClass = (guessedPlayerAge, randomPlayerAge) => {
     if (guessedPlayerAge < randomPlayerAge) {
-      return 'text-red-500';
+      return "text-red-500";
     } else if (guessedPlayerAge > randomPlayerAge) {
-      return 'text-red-500';
+      return "text-red-500";
     } else {
-      return 'text-green-500';
+      return "text-green-500";
     }
   };
 
@@ -169,47 +190,74 @@ const GuessThePlayer = () => {
           >
             <FormControlLabel
               value="PL"
-              control={<Radio sx={{ color: "white" }} />}
+              control={
+                <Radio
+                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
+                />
+              }
               label="Premier League"
               sx={{ color: "white" }}
             />
             <FormControlLabel
               value="BL1"
-              control={<Radio sx={{ color: "white" }} />}
+              control={
+                <Radio
+                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
+                />
+              }
               label="Bundesliga"
               sx={{ color: "white" }}
             />
             <FormControlLabel
               value="PD"
-              control={<Radio sx={{ color: "white" }} />}
+              control={
+                <Radio
+                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
+                />
+              }
               label="La Liga"
               sx={{ color: "white" }}
             />
             <FormControlLabel
               value="SA"
-              control={<Radio sx={{ color: "white" }} />}
+              control={
+                <Radio
+                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
+                />
+              }
               label="Seria A"
               sx={{ color: "white" }}
             />
           </RadioGroup>
         </FormControl>
-        <h2 className="text-3xl pt-10 text-center mb-4">Which player are we looking for?</h2>
+        <h2 className="text-3xl pt-10 text-center mb-4">
+          Which player are we looking for?
+        </h2>
         <form className="flex justify-center relative w-full">
           <input
             type="text"
             autoComplete="off"
             name="text"
             className="input w-full"
-            placeholder={isLeagueSelected ? "Search for a player" : "Select a League"}
+            placeholder={
+              isLeagueSelected ? "Search for a player" : "Select a League"
+            }
             onChange={handleInputChange}
             readOnly={!isLeagueSelected}
             onBlur={handleBlur}
             ref={inputRef}
             onFocus={(event) => {
               if (event.target.value.length >= 3) {
-                const searchText = event.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                const filtered = players.filter(player =>
-                  player.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchText)
+                const searchText = event.target.value
+                  .toLowerCase()
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "");
+                const filtered = players.filter((player) =>
+                  player.name
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .includes(searchText)
                 );
                 setFilteredPlayers(filtered);
               }
@@ -217,9 +265,17 @@ const GuessThePlayer = () => {
           />
           {filteredPlayers.length > 0 && (
             <div className="absolute top-full left-0 right-0 bg-white text-black z-10 max-h-60 overflow-y-auto input">
-              {filteredPlayers.map(player => (
-                <div key={player.id} className="p-2 border-b border-gray-300 flex items-center" onClick={() => displayGuess(player)}>
-                  <img src={player.crest} alt={`${player.name} club crest`} className="h-[40px] mr-2" />
+              {filteredPlayers.map((player) => (
+                <div
+                  key={player.id}
+                  className="p-2 border-b border-gray-300 flex items-center"
+                  onClick={() => displayGuess(player)}
+                >
+                  <img
+                    src={player.crest}
+                    alt={`${player.name} club crest`}
+                    className="h-[40px] mr-2"
+                  />
                   <p>{player.name}</p>
                 </div>
               ))}
@@ -229,44 +285,74 @@ const GuessThePlayer = () => {
         <div className="mt-4">
           {guesses >= 6 && (
             <div className="mb-4 p-4 border-4 rounded-lg flex flex-col items-center justify-around guessesDiv">
-              <h2 className="text-3xl font-bold text-white mb-4">YOU LOST, CORRECT ANSWER:</h2>
+              <h2 className="text-3xl font-bold text-white mb-4">
+                YOU LOST, CORRECT ANSWER:
+              </h2>
               <div className="flex justify-between w-full">
-                <p className="text-lg font-semibold mb-2 text-left text-green-500">{randomPlayer.name}</p>
+                <p className="text-lg font-semibold mb-2 text-left text-green-500">
+                  {randomPlayer.name}
+                </p>
               </div>
               <div className="flex flex-col items-center">
                 <div className="flex space-x-4">
                   <div className="flex flex-col items-center">
                     <div className="w-20 h-20 p-2 text-lg bg-white text-black font-semibold flex justify-center items-center border-4 border-green-500">
                       <div className="text-center">
-                        {randomPlayerFlag ? <img src={randomPlayerFlag} alt={`${randomPlayer.nationality} flag`} className="w-[56px] inline" /> : null}
+                        {randomPlayerFlag ? (
+                          <img
+                            src={randomPlayerFlag}
+                            alt={`${randomPlayer.nationality} flag`}
+                            className="w-[56px] inline"
+                          />
+                        ) : null}
                       </div>
                     </div>
-                    <div className="text-center font-semibold text-green-500">NAT</div>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-20 h-20 p-2 text-lg bg-white text-black font-semibold flex justify-center items-center border-4 border-green-500">
-                      <div className="text-center"><img src={`${randomPlayer.league}`} alt="league" /></div>
+                    <div className="text-center font-semibold text-green-500">
+                      NAT
                     </div>
-                    <div className="text-center font-semibold text-green-500">LEAGUE</div>
                   </div>
                   <div className="flex flex-col items-center">
                     <div className="w-20 h-20 p-2 text-lg bg-white text-black font-semibold flex justify-center items-center border-4 border-green-500">
-                      <div className="text-center"><img src={`${randomPlayer.crest}`} alt="league" /></div>
-                    </div>
-                    <div className="text-center font-semibold text-green-500">CLUB</div>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-20 h-20 p-2 text-lg bg-white text-black font-semibold flex justify-center items-center border-4 border-green-500">
-                      <div className="text-center">{getPositionAbbreviation(randomPlayer.position)}</div>
-                    </div>
-                    <div className="text-center font-semibold text-green-500">POS</div>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-20 h-20 p-2 text-lg bg-white text-black font-semibold flex justify-center items-center border-4 border-green-500">
-                      <div className="text-center">{calculateAge(randomPlayer.dateOfBirth)}</div>
+                      <div className="text-center">
+                        <img src={`${randomPlayer.league}`} alt="league" />
+                      </div>
                     </div>
                     <div className="text-center font-semibold text-green-500">
-                      AGE {getAgeComparisonArrow(calculateAge(randomPlayer.dateOfBirth), calculateAge(randomPlayer.dateOfBirth))}
+                      LEAGUE
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="w-20 h-20 p-2 text-lg bg-white text-black font-semibold flex justify-center items-center border-4 border-green-500">
+                      <div className="text-center">
+                        <img src={`${randomPlayer.crest}`} alt="league" />
+                      </div>
+                    </div>
+                    <div className="text-center font-semibold text-green-500">
+                      CLUB
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="w-20 h-20 p-2 text-lg bg-white text-black font-semibold flex justify-center items-center border-4 border-green-500">
+                      <div className="text-center">
+                        {getPositionAbbreviation(randomPlayer.position)}
+                      </div>
+                    </div>
+                    <div className="text-center font-semibold text-green-500">
+                      POS
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="w-20 h-20 p-2 text-lg bg-white text-black font-semibold flex justify-center items-center border-4 border-green-500">
+                      <div className="text-center">
+                        {calculateAge(randomPlayer.dateOfBirth)}
+                      </div>
+                    </div>
+                    <div className="text-center font-semibold text-green-500">
+                      AGE{" "}
+                      {getAgeComparisonArrow(
+                        calculateAge(randomPlayer.dateOfBirth),
+                        calculateAge(randomPlayer.dateOfBirth)
+                      )}
                     </div>
                   </div>
                 </div>
@@ -277,45 +363,144 @@ const GuessThePlayer = () => {
           {guessedPlayers.length > 0 ? (
             <div>
               {guessedPlayers.map((player, index) => (
-                <div key={index} className="mb-4 p-4 border-4 rounded-lg flex flex-col items-center justify-around guessesDiv">
+                <div
+                  key={index}
+                  className="mb-4 p-4 border-4 rounded-lg flex flex-col items-center justify-around guessesDiv"
+                >
                   <div className="flex justify-between w-full">
-                    <p className={`text-lg font-semibold mb-2 text-left ${player.name === randomPlayer.name ? 'text-green-500' : 'text-red-500'}`}>{player.name}</p>
-                    <p className="text-lg font-semibold mb-2">Guesses: {index + 1}/6</p>
+                    <p
+                      className={`text-lg font-semibold mb-2 text-left ${
+                        player.name === randomPlayer.name
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {player.name}
+                    </p>
+                    <p className="text-lg font-semibold mb-2">
+                      Guesses: {index + 1}/6
+                    </p>
                   </div>
                   <div className="flex flex-col items-center">
                     <div className="flex space-x-4">
                       <div className="flex flex-col items-center">
-                        <div className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${player.nationality === randomPlayer.nationality ? 'border-4 border-green-500' : 'border-4 border-red-500'}`}>
+                        <div
+                          className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${
+                            player.nationality === randomPlayer.nationality
+                              ? "border-4 border-green-500"
+                              : "border-4 border-red-500"
+                          }`}
+                        >
                           <div className="text-center">
-                            {player.flag ? <img src={player.flag} alt={`${player.nationality} flag`} className="w-[56px] inline" /> : null}
+                            {player.flag ? (
+                              <img
+                                src={player.flag}
+                                alt={`${player.nationality} flag`}
+                                className="w-[56px] inline"
+                              />
+                            ) : null}
                           </div>
                         </div>
-                        <div className={`text-center font-semibold ${player.nationality === randomPlayer.nationality ? 'text-green-500' : 'text-red-500'}`}>NAT</div>
+                        <div
+                          className={`text-center font-semibold ${
+                            player.nationality === randomPlayer.nationality
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          NAT
+                        </div>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${player.league === randomPlayer.league ? 'border-4 border-green-500' : 'border-4 border-red-500'}`}>
-                          <div className="text-center"><img src={`${player.league}`} alt="league" /></div>
+                        <div
+                          className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${
+                            player.league === randomPlayer.league
+                              ? "border-4 border-green-500"
+                              : "border-4 border-red-500"
+                          }`}
+                        >
+                          <div className="text-center">
+                            <img src={`${player.league}`} alt="league" />
+                          </div>
                         </div>
-                        <div className={`text-center font-semibold ${player.league === randomPlayer.league ? 'text-green-500' : 'text-red-500'}`}>LEAGUE</div>
+                        <div
+                          className={`text-center font-semibold ${
+                            player.league === randomPlayer.league
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          LEAGUE
+                        </div>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${player.club === randomPlayer.club ? 'border-4 border-green-500' : 'border-4 border-red-500'}`}>
-                          <div className="text-center"><img src={`${player.crest}`} alt="league" /></div>
+                        <div
+                          className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${
+                            player.club === randomPlayer.club
+                              ? "border-4 border-green-500"
+                              : "border-4 border-red-500"
+                          }`}
+                        >
+                          <div className="text-center">
+                            <img src={`${player.crest}`} alt="league" />
+                          </div>
                         </div>
-                        <div className={`text-center font-semibold ${player.club === randomPlayer.club ? 'text-green-500' : 'text-red-500'}`}>CLUB</div>
+                        <div
+                          className={`text-center font-semibold ${
+                            player.club === randomPlayer.club
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          CLUB
+                        </div>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${player.position === randomPlayer.position ? 'border-4 border-green-500' : 'border-4 border-red-500'}`}>
-                          <div className="text-center">{getPositionAbbreviation(player.position)}</div>
+                        <div
+                          className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${
+                            player.position === randomPlayer.position
+                              ? "border-4 border-green-500"
+                              : "border-4 border-red-500"
+                          }`}
+                        >
+                          <div className="text-center">
+                            {getPositionAbbreviation(player.position)}
+                          </div>
                         </div>
-                        <div className={`text-center font-semibold ${player.position === randomPlayer.position ? 'text-green-500' : 'text-red-500'}`}>POS</div>
+                        <div
+                          className={`text-center font-semibold ${
+                            player.position === randomPlayer.position
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          POS
+                        </div>
                       </div>
                       <div className="flex flex-col items-center">
-                        <div className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${calculateAge(player.dateOfBirth) === calculateAge(randomPlayer.dateOfBirth) ? 'border-4 border-green-500' : 'border-4 border-red-500'}`}>
-                          <div className="text-center">{calculateAge(player.dateOfBirth)}</div>
+                        <div
+                          className={`w-20 h-20 p-2 border-2 text-lg bg-white text-black font-semibold flex justify-center items-center ${
+                            calculateAge(player.dateOfBirth) ===
+                            calculateAge(randomPlayer.dateOfBirth)
+                              ? "border-4 border-green-500"
+                              : "border-4 border-red-500"
+                          }`}
+                        >
+                          <div className="text-center">
+                            {calculateAge(player.dateOfBirth)}
+                          </div>
                         </div>
-                        <div className={`text-center font-semibold ${getAgeComparisonClass(calculateAge(player.dateOfBirth), calculateAge(randomPlayer.dateOfBirth))}`}>
-                          AGE {getAgeComparisonArrow(calculateAge(player.dateOfBirth), calculateAge(randomPlayer.dateOfBirth))}
+                        <div
+                          className={`text-center font-semibold ${getAgeComparisonClass(
+                            calculateAge(player.dateOfBirth),
+                            calculateAge(randomPlayer.dateOfBirth)
+                          )}`}
+                        >
+                          AGE{" "}
+                          {getAgeComparisonArrow(
+                            calculateAge(player.dateOfBirth),
+                            calculateAge(randomPlayer.dateOfBirth)
+                          )}
                         </div>
                       </div>
                     </div>
