@@ -51,6 +51,12 @@ const LeagueSelector = ({ league, handleLeagueChange }) => {
           label="Seria A"
           sx={{ color: "white" }}
         />
+        <FormControlLabel
+          value="CL"
+          control={<Radio sx={{ color: "white" }} />}
+          label="Champions League"
+          sx={{ color: "white" }}
+        />
       </RadioGroup>
     </FormControl>
   );
